@@ -7,9 +7,8 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import serialization
 
 message = input()
-
+print("입력한 메시지 :" , message)
 message = message.encode()
-print(message)
 
 with open("private_key.pem","rb")as key_file: ##개인 키 
     private_key = serialization.load_pem_private_key(
@@ -33,7 +32,19 @@ encrypted = public_key.encrypt(
     )
 )
 print("")
-print(encrypted)
+print("암호문 :", encrypted)
+
+original_message = private_key.decrypt(
+        encrypted,
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+print("")
+original_message = original_message.decode()
+print("복호문 :", original_message)
 
     
 
